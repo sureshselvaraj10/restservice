@@ -9,3 +9,5 @@
 
 - Service url - http://<hostname:port>/service/api/counter?track=<value>
 	- Example: http://localhost:8080/service/api/counter?track=suresh
+
+- It has stand alone multi-threaded java program to test the application
