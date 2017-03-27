@@ -25,7 +25,7 @@ public class RequestCounterClient implements Callable<String> {
     private static int threadSize = 20000;
     private int threadSleepTime = 1000;
 
-    private final static String serviceURL = "http://localhost:8080/api/counter?track=";
+    private final static String serviceURL = "http://localhost:8080/restservice/api/counter?track=";
 
     @Override
     public String call() throws Exception {

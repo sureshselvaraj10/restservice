@@ -8,8 +8,8 @@ What does this application do:
 
 - Generate war files using maven or gradle 
 
-- Service url - http://<hostname:port>/service/api/counter?track=<value>
-	- Example: http://localhost:8080/service/api/counter?track=suresh
+- Service url - http://<hostname:port>/restservice/api/counter?track=<value>
+	- Example: http://localhost:8080/restservice/api/counter?track=suresh
 
 - It has stand alone multi-threaded java program (RequestCounterClient.java) to test the application
 
@@ -26,3 +26,12 @@ Percentage of the requests served within a certain time (ms)
   99%    169
  100%    195 (longest request)
  ```
+
+How to run the application:
+===========================
+1. git clone https://github.com/sureshselvaraj10/restservice.git
+2. cd restservice
+3. ./gradlew jettyRunWar
+	-  Application will be started in port 8881 (the default port given in build.gradle)
+	-  If you want to start the application in port 8080, start the application using `./gradlew jettyRunWar -PhttpPort=8080`
+	-  sample application url: http://localhost:8881/restservice/api/counter?track=suresh
