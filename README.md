@@ -31,4 +31,5 @@ How to run the application:
 ===========================
 1. git clone https://github.com/sureshselvaraj10/restservice.git
 2. cd restservice
-3. ./gradlew jettyRunWar
+3. ./gradlew jettyRunWar   -   http://localhost:8881/restservice/api/counter?track=suresh
+4. ./gradlew jettyRunWar -PhttpPort=8080   -   http://localhost:8080/restservice/api/counter?track=suresh
