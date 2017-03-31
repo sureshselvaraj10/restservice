@@ -4,7 +4,7 @@ What does this application do:
 	1. The number of requests sent to this server with this word as a parameter since service started
 	2. The number of occurrences of this word in the set of files given within the application (https://github.com/sureshselvaraj10/restservice/tree/master/src/main/resources/txtfiles)
 
-- The application is using jersey for creating restful service, Maven/gradle (gradle branch) for building the application
+- The application is using jersey for creating restful service, Maven/gradle for building the application
 
 - Generate war files using maven or gradle 
 
