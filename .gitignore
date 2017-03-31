@@ -3,3 +3,5 @@ target/
 build/
 .DS_Store
 .gradle/
+.idea/
+service.iml

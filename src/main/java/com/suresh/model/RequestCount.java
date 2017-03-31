@@ -5,8 +5,17 @@ package com.suresh.model;
  */
 public class RequestCount {
 
+	private String inputToken;
 	private int numberOfRequests;
 	private int numberOfOccurrencesInFiles;
+
+	public String getInputToken() {
+		return inputToken;
+	}
+
+	public void setInputToken(String inputToken) {
+		this.inputToken = inputToken;
+	}
 
 	public int getNumberOfRequests() {
 		return numberOfRequests;

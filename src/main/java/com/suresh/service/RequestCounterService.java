@@ -1,6 +1,7 @@
 package com.suresh.service;
 
 import com.suresh.indexer.Indexer;
+import com.suresh.model.RequestCount;
 import com.suresh.util.CommonUtil;
 import org.apache.log4j.Logger;
 
@@ -10,8 +11,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Service to get the number of requests and occurrences in files for the given word
@@ -20,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RequestCounterService {
 
     // fields to track the request counts
-    private static Map<String, Integer> mapRequestCount = new ConcurrentHashMap<String, Integer>();
+    private static Map<String, AtomicInteger> mapRequestCount = new ConcurrentHashMap<String, AtomicInteger>();
     private String queryParamName = "track";
 
     private final static Logger logger = Logger.getLogger(RequestCounterService.class);
@@ -42,9 +47,26 @@ public class RequestCounterService {
             occurrenceCount = RequestCounterService.getNumberOfWordOccurencesCount(queryParamValue.toLowerCase());
         }
 
-        logger.info("count for " + queryParamValue + " - requestCount:" + requestCount + ", occurrenceCount:" + occurrenceCount);
+        return CommonUtil.getServiceResponse(queryParamValue, requestCount, occurrenceCount);
+    }
 
-        return CommonUtil.getServiceResponse(requestCount, occurrenceCount);
+    @GET
+    @Path("count")
+    @Produces({MediaType.APPLICATION_JSON})
+    public String getAllRequestCount() {
+        String response = "";
+        List<RequestCount> requestCountList = new ArrayList<RequestCount>();
+        Iterator requestCountMapIterator = mapRequestCount.entrySet().iterator();
+        while (requestCountMapIterator.hasNext()) {
+            Map.Entry<String, AtomicInteger> requestCountPair = (Map.Entry<String, AtomicInteger>)requestCountMapIterator.next();
+
+            RequestCount requestCount = new RequestCount();
+            requestCount.setInputToken(requestCountPair.getKey());
+            requestCount.setNumberOfRequests(requestCountPair.getValue().intValue());
+            requestCount.setNumberOfOccurrencesInFiles(getNumberOfWordOccurencesCount(requestCountPair.getKey()));
+            requestCountList.add(requestCount);
+        }
+        return CommonUtil.getServiceResponse(requestCountList);
     }
 
     /**
@@ -52,21 +74,24 @@ public class RequestCounterService {
      * @param queryParam
      * @return
      */
-    public static synchronized int incrementRequestCount(String queryParam) {
+    public static int incrementRequestCount(String queryParam) {
 
-        Integer requestCount = mapRequestCount.get(queryParam);
+        AtomicInteger currentRequestCount = mapRequestCount.get(queryParam);
 
-        if (null == requestCount) {
-            requestCount = 1;
-            mapRequestCount.put(queryParam, requestCount);
+        if (null == currentRequestCount) {
+            currentRequestCount = new AtomicInteger(1);
+            mapRequestCount.put(queryParam, currentRequestCount);
         } else {
-            requestCount = requestCount + 1;
-            mapRequestCount.put(queryParam, requestCount);
+            currentRequestCount.incrementAndGet();
+            mapRequestCount.put(queryParam, currentRequestCount);
         }
 
-        logger.info("request count for - " + queryParam + " : " + requestCount);
+        // custome logging to show the count
+        if(currentRequestCount.intValue() == 1000) {
+            logger.info("request count for - " + queryParam + " : " + currentRequestCount.intValue());
+        }
 
-        return requestCount;
+        return currentRequestCount.intValue();
     }
 
     /**
@@ -74,7 +99,7 @@ public class RequestCounterService {
      * @param queryParam
      * @return
      */
-    public static synchronized int getNumberOfWordOccurencesCount(String queryParam) {
+    public static int getNumberOfWordOccurencesCount(String queryParam) {
         return Indexer.getNumberOfWordOccurencesCount(queryParam);
     }
 

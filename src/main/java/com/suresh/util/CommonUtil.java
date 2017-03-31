@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.suresh.model.RequestCount;
 import com.suresh.wrapper.ServiceResponse;
 
+import java.util.List;
+
 /**
  * Utility class for the service
  */
@@ -38,10 +40,11 @@ public class CommonUtil {
      * @param occurrenceCount
      * @return
      */
-    public static String getServiceResponse(int requestCount, int occurrenceCount) {
+    public static String getServiceResponse(String inputToken, int requestCount, int occurrenceCount) {
 
         // Forming requestcount response
         RequestCount requestCountObj = new RequestCount();
+        requestCountObj.setInputToken(inputToken);
         requestCountObj.setNumberOfRequests(requestCount);
         requestCountObj.setNumberOfOccurrencesInFiles(occurrenceCount);
 
@@ -49,11 +52,24 @@ public class CommonUtil {
         ServiceResponse serviceResponse = new ServiceResponse();
         serviceResponse.setPayload(requestCountObj);
 
+        return getPrettyJson(serviceResponse);
+
+    }
+
+    public static String getServiceResponse(List<RequestCount> requestCountList) {
+
+        // Forming service response to return
+        ServiceResponse serviceResponse = new ServiceResponse();
+        serviceResponse.setPayload(requestCountList);
+
+        return getPrettyJson(serviceResponse);
+
+    }
+
+    public static String getPrettyJson(ServiceResponse serviceResponse) {
         Gson jsonFormer = new GsonBuilder().setPrettyPrinting().create();
         String jsonResponse = jsonFormer.toJson(serviceResponse);
-
         return jsonResponse;
-
     }
 
 }

@@ -138,13 +138,11 @@ public class Indexer implements ServletContextListener {
      * @return
      */
     public static int getNumberOfWordOccurencesCount(String word) {
-        logger.info("getting number of occurrences for: " + word);
         Integer noOfWordOccurences = mapWordOccurrences.get(word);
 
         if (null == noOfWordOccurences) {
             noOfWordOccurences = 0;
         }
-        logger.info("number of occurrences for- " + word + " : " + noOfWordOccurences);
         return noOfWordOccurences;
     }
 
